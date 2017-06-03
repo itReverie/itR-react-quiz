@@ -2,28 +2,38 @@
 <html>
  <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Me Around</title>
-  </head>
-
-
+    <title>Playing with React</title>
+</head>
 
 <body>
 
 <div id="container"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+<script src="https://unpkg.com/react@latest/dist/react.js"></script>
+<script src="https://unpkg.com/react-dom@latest/dist/react-dom.js"></script>
+<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+
 <script type="text/jsx">
-   /** @jsx React.DOM */
+   class Button extends React.Component{
+     //Babel
+      state = {counter : 0};
+      handleClick = () => { this.setState({
+      												counter: this.state.counter + 1
+      											})}
 
- var Hello = React.createClass ({
-   render: function(){
-     return <div><h1>Hello at {this.props.now}</h1></div>
+      /* --normal javascript
+      constructor (props)
+      {
+       super (props);
+       this.state ={counter: 0 };
+      }
+      --*/
+      render (){
+      						return (<button onClick={this.handleClick}>{this.state.counter}</button>);
+               }
    }
- });
 
-  React.render(<Hello now={new Date().toString()} />,
-                         document.getElementById('container'));
+   ReactDOM.render (<Button />, container);
 
 </script>
 </body>
