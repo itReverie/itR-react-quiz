@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+ <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Me Around</title>
+  </head>
+
+
+
+<body>
+
+<div id="container"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+<script type="text/jsx">
+   /** @jsx React.DOM */
+
+ var Hello = React.createClass ({
+   render: function(){
+     return <div><h1>Hello at {this.props.now}</h1></div>
+   }
+ });
+
+  React.render(<Hello now={new Date().toString()} />,
+                         document.getElementById('container'));
+
+</script>
+</body>
+</html>
