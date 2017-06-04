@@ -19,14 +19,20 @@
 //Class Componnt (stateful) -> Button with events
 class Button extends React.Component{
 
-      // handleClick =          () => { this.setState(
-      //               (prevState) => ({counter: this.state.counter + 1 })
-      //                              );};
+      handleClick = () => {
+                          this.props.onClickFunction(this.props.incrementValue)
+                          };
 
       render (){
-      						return (<button onClick={()=>this.props.onClickFunction(this.props.incrementValue)}>
+                  //Using this approach creates a function everytime we render the element.
+                  //This could be reduced by using a handler
+      						// return (<button onClick={()=>this.props.onClickFunction(this.props.incrementValue)}>
+                  //         +{this.props.incrementValue}
+                  //   </button>);
+
+                  return (<button onClick={this.handleClick}>
                           +{this.props.incrementValue}
-                          </button>);
+                    </button>);
                }
    }
 
