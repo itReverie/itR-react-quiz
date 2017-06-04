@@ -18,10 +18,8 @@
      //Babel
       state = {counter : 0};
       handleClick =          () => { this.setState(
-                    (prevState) => {
-                                    return {counter: this.state.counter + 1 };
-                                   });
-                                   };
+                    (prevState) => ({counter: this.state.counter + 1 })
+                                   );};
 
       render (){
       						return (<button onClick={this.handleClick}>{this.state.counter}</button>);
