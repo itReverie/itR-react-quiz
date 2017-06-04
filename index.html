@@ -15,6 +15,8 @@
 
 <script type="text/jsx">
 
+
+//component
 const Card = (props) => {
   return (
      <div>
@@ -27,18 +29,8 @@ const Card = (props) => {
   );
 };
 
-let data =[
-  {name:"Brenda",
-   avatar_url:"https://avatars2.githubusercontent.com/u/4857771?v=3",
-   company:"itReverie"},
-   {name:"Brenda",
-   avatar_url:"https://avatars2.githubusercontent.com/u/4857771?v=3",
-   company:"itReverie"},
-   {name:"Brenda",
-   avatar_url:"https://avatars2.githubusercontent.com/u/4857771?v=3",
-   company:"itReverie"},
-];
 
+//Sibling Component 2
 const CardList = (props) => {
   return (
     <div>
@@ -47,7 +39,45 @@ const CardList = (props) => {
   );
 }
 
-   ReactDOM.render (<CardList cards={data} />, container);
+//Sibling Component 1
+class Form extends React.Component {
+  render(){
+    return (
+      <form>
+      <input type="text" placeholder="Github username" />
+      <button type="submit"> Add card</button>
+      </form>
+    );
+  }
+}
+
+// Parent Component. It handles the connection between two siblings
+class App extends React.Component{
+ state = {
+   cards: [
+      {name:"Brenda",
+      avatar_url:"https://avatars2.githubusercontent.com/u/4857771?v=3",
+      company:"itReverie"},
+      {name:"Brenda 2",
+      avatar_url:"https://avatars2.githubusercontent.com/u/4857771?v=3",
+      company:"itReverie"},
+      {name:"Brenda 3",
+      avatar_url:"https://avatars2.githubusercontent.com/u/4857771?v=3",
+      company:"itReverie"},
+   ]
+ };
+
+  render(){
+    return (
+      <div>
+      <Form />
+      <CardList cards={this.state.cards} />
+      </div>
+    );
+  }
+}
+
+   ReactDOM.render (<App />, container);
 
 </script>
 </body>
