@@ -12,6 +12,7 @@
 <script src="https://unpkg.com/react@latest/dist/react.js"></script>
 <script src="https://unpkg.com/react-dom@latest/dist/react-dom.js"></script>
 <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 <script type="text/jsx">
 
@@ -19,7 +20,7 @@
 //component
 const Card = (props) => {
   return (
-     <div>
+     <div key={props.name}>
      <img width="75" src={props.avatar_url} />
      <div style={{display: 'inline-block', marginleft: 10}}>
       <div style={{fontSize: '1.25em', fontWeight: 'bold'}}>{props.name}</div>
@@ -34,22 +35,30 @@ const Card = (props) => {
 const CardList = (props) => {
   return (
     <div>
-     {props.cards.map(card => <Card {...card} /> )}
+     {props.cards.map(card => <Card key={card.id} {...card} /> )}
     </div>
   );
 }
 
 //Sibling Component 1
 class Form extends React.Component {
+  state ={userName: ''}
   handleSubmit = (event) => {
     event.preventDefault();
-    console.log('Event: Form Submit');
+    console.log('Event: Form Submit', this.state.userName);
+    //ajax.. {fetch or axious}
+    axios.get(`https://api.github.com/users/${this.state.userName}`)
+         .then (resp => {
+           this.props.onSubmit(resp.data);
+           this.setState({userName:''});
+         });
   };
   render(){
     return (
       <form onSubmit={this.handleSubmit}>
       <input type="text"
-             ref={(input)=>this.userNameInput = input}
+             value={this.state.userName}
+             onChange={(event)=> this.setState({userName : event.target.value})}
              placeholder="Github username"
             required />
       <button type="submit">Add card</button>
@@ -62,25 +71,28 @@ class Form extends React.Component {
 class App extends React.Component{
  state = {
    cards: [
-      {key: 1,
-      name:"Brenda",
-      avatar_url:"https://avatars2.githubusercontent.com/u/4857771?v=3",
-      company:"itReverie"},
-      {key: 2,
-      name:"Brenda 2",
-      avatar_url:"https://avatars2.githubusercontent.com/u/4857771?v=3",
-      company:"itReverie"},
-      {key: 3,
-      name:"Brenda 3",
-      avatar_url:"https://avatars2.githubusercontent.com/u/4857771?v=3",
-      company:"itReverie"},
+      // {key: 1,
+      // name:"Brenda",
+      // avatar_url:"https://avatars2.githubusercontent.com/u/4857771?v=3",
+      // company:"itReverie"},
+      // {key: 2,
+      // name:"Brenda 2",
+      // avatar_url:"https://avatars2.githubusercontent.com/u/4857771?v=3",
+      // company:"itReverie"},
+      // {key: 3,
+      // name:"Brenda 3",
+      // avatar_url:"https://avatars2.githubusercontent.com/u/4857771?v=3",
+      // company:"itReverie"},
    ]
  };
+
+addNewCard=(cardInfo)=>{this.setState(prevState => ({
+  cards: prevState.cards.concat (cardInfo)}))};
 
   render(){
     return (
       <div>
-      <Form />
+      <Form onSubmit={this.addNewCard}/>
       <CardList cards={this.state.cards} />
       </div>
     );
