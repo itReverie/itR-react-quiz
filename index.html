@@ -14,19 +14,46 @@
 <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
 
 <script type="text/jsx">
-   class Button extends React.Component{
-     //Babel
-      state = {counter : 0};
-      handleClick =          () => { this.setState(
-                    (prevState) => ({counter: this.state.counter + 1 })
-                                   );};
+
+
+//Class Componnt (stateful) -> Button with events
+class Button extends React.Component{
+
+      // handleClick =          () => { this.setState(
+      //               (prevState) => ({counter: this.state.counter + 1 })
+      //                              );};
 
       render (){
-      						return (<button onClick={this.handleClick}>{this.state.counter}</button>);
+      						return (<button onClick={()=>this.props.onClickFunction(this.props.incrementValue)}>
+                          +{this.props.incrementValue}
+                          </button>);
                }
    }
 
-   ReactDOM.render (<Button />, container);
+// Functional component (stateless as it will just display a value)
+const Result= (props) => { return (<div>{props.counter}</div>); }
+
+//Class Component with previous ones -> Includes all the other components
+class App extends React.Component {
+state = {counter : 0};
+incrementCounter=(incrementValue)=>{
+  this.setState(
+                 (prevState) => ({counter: prevState.counter + incrementValue })
+                               );
+};
+ render(){
+   return (
+            <div>
+                <Button incrementValue={1} onClickFunction={this.incrementCounter}/>
+                <Button incrementValue={5} onClickFunction={this.incrementCounter}/>
+                <Button incrementValue={50} onClickFunction={this.incrementCounter}/>
+                <Button incrementValue={500} onClickFunction={this.incrementCounter}/>
+                <Result counter={this.state.counter}/>
+            </div>
+          )
+ };
+}
+   ReactDOM.render (<App />, container);
 
 </script>
 </body>
