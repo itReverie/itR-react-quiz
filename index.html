@@ -15,51 +15,39 @@
 
 <script type="text/jsx">
 
-
-//Class Componnt (stateful) -> Button with events
-class Button extends React.Component{
-
-      handleClick = () => {
-                          this.props.onClickFunction(this.props.incrementValue)
-                          };
-
-      render (){
-                  //Using this approach creates a function everytime we render the element.
-                  //This could be reduced by using a handler
-      						// return (<button onClick={()=>this.props.onClickFunction(this.props.incrementValue)}>
-                  //         +{this.props.incrementValue}
-                  //   </button>);
-
-                  return (<button onClick={this.handleClick}>
-                          +{this.props.incrementValue}
-                    </button>);
-               }
-   }
-
-// Functional component (stateless as it will just display a value)
-const Result= (props) => { return (<div>{props.counter}</div>); }
-
-//Class Component with previous ones -> Includes all the other components
-class App extends React.Component {
-state = {counter : 0};
-incrementCounter=(incrementValue)=>{
-  this.setState(
-                 (prevState) => ({counter: prevState.counter + incrementValue })
-                               );
+const Card = (props) => {
+  return (
+     <div>
+     <img width="75" src={props.avatar_url} />
+     <div style={{display: 'inline-block', marginleft: 10}}>
+      <div style={{fontSize: '1.25em', fontWeight: 'bold'}}>{props.name}</div>
+      <div>{props.company}</div>
+     </div>
+     </div>
+  );
 };
- render(){
-   return (
-            <div>
-                <Button incrementValue={1} onClickFunction={this.incrementCounter}/>
-                <Button incrementValue={5} onClickFunction={this.incrementCounter}/>
-                <Button incrementValue={50} onClickFunction={this.incrementCounter}/>
-                <Button incrementValue={500} onClickFunction={this.incrementCounter}/>
-                <Result counter={this.state.counter}/>
-            </div>
-          )
- };
+
+let data =[
+  {name:"Brenda",
+   avatar_url:"https://avatars2.githubusercontent.com/u/4857771?v=3",
+   company:"itReverie"},
+   {name:"Brenda",
+   avatar_url:"https://avatars2.githubusercontent.com/u/4857771?v=3",
+   company:"itReverie"},
+   {name:"Brenda",
+   avatar_url:"https://avatars2.githubusercontent.com/u/4857771?v=3",
+   company:"itReverie"},
+];
+
+const CardList = (props) => {
+  return (
+    <div>
+     {props.cards.map(card => <Card {...card} /> )}
+    </div>
+  );
 }
-   ReactDOM.render (<App />, container);
+
+   ReactDOM.render (<CardList cards={data} />, container);
 
 </script>
 </body>
