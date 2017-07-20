@@ -1,8 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" xml:lang="en-GB" xmlns="http://www.w3.org/1999/xhtml">
  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Playing with React</title>
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/myStyles.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 </head>
 
 <body>
@@ -16,91 +21,88 @@
 
 <script type="text/jsx">
 
-
-//component
-const Card = (props) => {
+//Subcomponent of the game: Stars
+const Stars= (props) => {
+  const numberOfStars=Math.floor(Math.random()*9);
+  let stars =[];
+  for(let i=0; i<numberOfStars; i++){
+    stars.push(<i key={i} className="fa fa-star"></i>);
+  }
   return (
-     <div key={props.name}>
-     <img width="75" src={props.avatar_url} />
-     <div style={{display: 'inline-block', marginleft: 10}}>
-      <div style={{fontSize: '1.25em', fontWeight: 'bold'}}>{props.name}</div>
-      <div>{props.company}</div>
-     </div>
-     </div>
-  );
-};
-
-
-//Sibling Component 2
-const CardList = (props) => {
-  return (
-    <div>
-     {props.cards.map(card => <Card key={card.id} {...card} /> )}
+    <div className="col-xs-5">
+     {stars}
     </div>
   );
 }
 
-//Sibling Component 1
-class Form extends React.Component {
-  state ={userName: ''}
-  handleSubmit = (event) => {
-    event.preventDefault();
-    console.log('Event: Form Submit', this.state.userName);
-    //ajax.. {fetch or axious}
-    axios.get(`https://api.github.com/users/${this.state.userName}`)
-         .then (resp => {
-           this.props.onSubmit(resp.data);
-           this.setState({userName:''});
-         });
-  };
-  render(){
-    return (
-      <form onSubmit={this.handleSubmit}>
-      <input type="text"
-             value={this.state.userName}
-             onChange={(event)=> this.setState({userName : event.target.value})}
-             placeholder="Github username"
-            required />
-      <button type="submit">Add card</button>
-      </form>
-    );
-  }
+//Subcomponent of the game: Button
+const Button= (props) => {
+  return (
+    <div className="col-xs-2">
+    <button>=</button>
+    </div>
+  );
 }
 
-// Parent Component. It handles the connection between two siblings
-class App extends React.Component{
- state = {
-   cards: [
-      // {key: 1,
-      // name:"Brenda",
-      // avatar_url:"https://avatars2.githubusercontent.com/u/4857771?v=3",
-      // company:"itReverie"},
-      // {key: 2,
-      // name:"Brenda 2",
-      // avatar_url:"https://avatars2.githubusercontent.com/u/4857771?v=3",
-      // company:"itReverie"},
-      // {key: 3,
-      // name:"Brenda 3",
-      // avatar_url:"https://avatars2.githubusercontent.com/u/4857771?v=3",
-      // company:"itReverie"},
-   ]
- };
+//Subcomponent of the game : Answer
+const Answer= (props) => {
+  return (
+    <div className="col-xs-5">
+    Answer
+    </div>
+  );
+}
 
-addNewCard=(cardInfo)=>{this.setState(prevState => ({
-  cards: prevState.cards.concat (cardInfo)}))};
+//Subcomponent of the game : Numbers
+const Numbers= (props) => {
+  return (
+    <div className="card text-center">
+    <div>
+    <span className="selected">1</span>
+    <span className="used">2</span>
+    <span className="">3</span>
+    </div>
+    </div>
+  );
+}
 
+//Component: Game
+class Game extends React.Component{
   render(){
     return (
-      <div>
-      <Form onSubmit={this.addNewCard}/>
-      <CardList cards={this.state.cards} />
+      <div className="container">
+      <h3>Play Nine</h3>
+      <hr />
+      <div className="row">
+      <Stars/>
+      <Button/>
+      <Answer/>
+      </div>
+      <br />
+      <Numbers />
       </div>
     );
   }
 }
 
-   ReactDOM.render (<App />, container);
+
+
+class App extends React.Component{
+  render(){
+    return(
+      <div>
+      <Game />
+      </div>
+    );  }
+}
+
+ReactDOM.render (<App />, container);
 
 </script>
+<!-- <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script> -->
+<!-- <script src="bootstrap/js/bootstrap.min.js" type="text/javascript"></script> -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+
+
 </body>
 </html>
