@@ -24,13 +24,15 @@
 //Subcomponent of the game: Stars
 const Stars= (props) => {
   const numberOfStars=Math.floor(Math.random()*9);
-  let stars =[];
-  for(let i=0; i<numberOfStars; i++){
-    stars.push(<i key={i} className="fa fa-star"></i>);
-  }
+  // let stars =[];
+  // for(let i=0; i<numberOfStars; i++){
+  //   stars.push(<i key={i} className="fa fa-star"></i>);
+  // }
+
+  //react encourage you to use: map, filter, reduce instead of for loops
   return (
     <div className="col-xs-5">
-     {stars}
+     {_.range(numberOfStars).map(i => <i key={i} className="fa fa-star"></i>)}
     </div>
   );
 }
@@ -48,23 +50,24 @@ const Button= (props) => {
 const Answer= (props) => {
   return (
     <div className="col-xs-5">
-    Answer
+    <span>5</span>
+    <span>6</span>
     </div>
   );
 }
 
 //Subcomponent of the game : Numbers
 const Numbers= (props) => {
-  return (
+    return (
     <div className="card text-center">
     <div>
-    <span className="selected">1</span>
-    <span className="used">2</span>
-    <span className="">3</span>
+    {Numbers.list.map((number, i) => <span key={i}>{number}</span>)}
     </div>
     </div>
   );
-}
+};
+
+Numbers.list = _.range(1,9);
 
 //Component: Game
 class Game extends React.Component{
@@ -99,8 +102,9 @@ class App extends React.Component{
 ReactDOM.render (<App />, container);
 
 </script>
-<!-- <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script> -->
+ <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
 <!-- <script src="bootstrap/js/bootstrap.min.js" type="text/javascript"></script> -->
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/0.10.0/lodash.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 
 
