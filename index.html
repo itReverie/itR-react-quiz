@@ -63,10 +63,15 @@
         return 'selected';
       }
     }
+
     return (
       <div className="card text-center">
       <div>
-      {Numbers.list.map((number, i) => <span key={i} className={numberClassName(number)}>{number}</span>)}
+      {Numbers.list.map((number, i) =>
+          //We cannot to that in the onClick as it needs a function REFERENCE not a function CALL
+          <span key={i} className={numberClassName(number)} onClick={props.selectNumber(number)}>
+            {number}
+          </span>)}
       </div>
       </div>
     );
@@ -79,6 +84,12 @@
     // decalring the state variable in the game components
     // as it will be used in the Anwers and Numbers subcomponents
     state= {selectedNumbers :[2,4]};
+    //(clickNumber) is the argumnent
+    selectedNumber = (clickedNumber) => {
+                                          this.setState (
+                                                        prevState => ({selectedNumbers:prevState.selectedNumbers.concat(clickNumber)})
+                                                        )
+                                        };
 
     render(){
       return (
@@ -91,7 +102,8 @@
         <Answer selectedNumbers={this.state.selectedNumbers}/>
         </div>
         <br />
-        <Numbers selectedNumbers={this.state.selectedNumbers}/>
+        <Numbers selectedNumbers={this.state.selectedNumbers}
+                selectNumber={this.selectNumber}/>
         </div>
       );
     }
