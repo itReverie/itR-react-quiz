@@ -23,16 +23,10 @@
 
   //Subcomponent of the game: Stars
   const Stars= (props) => {
-    const numberOfStars=Math.floor(Math.random()*9);
-    // let stars =[];
-    // for(let i=0; i<numberOfStars; i++){
-    //   stars.push(<i key={i} className="fa fa-star"></i>);
-    // }
-
     //react encourage you to use: map, filter, reduce instead of for loops
     return (
       <div className="col-xs-5">
-      {_.range(numberOfStars).map(i => <i key={i} className="fa fa-star"></i>)}
+      {_.range(props.numberOfStars).map(i => <i key={i} className="fa fa-star"></i>)}
       </div>
     );
   }
@@ -69,7 +63,7 @@
       <div>
       {Numbers.list.map((number, i) =>
           //We cannot to that in the onClick as it needs a function REFERENCE not a function CALL
-          <span key={i} className={numberClassName(number)} onClick={props.selectNumber(number)}>
+          <span key={i} className={numberClassName(number)} onClick={()=>props.selectNumber(number)}>
             {number}
           </span>)}
       </div>
@@ -81,13 +75,17 @@
 
   //Component: Game
   class Game extends React.Component{
+
     // decalring the state variable in the game components
     // as it will be used in the Anwers and Numbers subcomponents
-    state= {selectedNumbers :[2,4]};
+    state= {
+            selectedNumbers :[],
+            randomNumberOfStars: 1 + Math.floor(Math.random()*9),
+          };
     //(clickNumber) is the argumnent
-    selectedNumber = (clickedNumber) => {
+    selectNumber = (clickedNumber) => {
                                           this.setState (
-                                                        prevState => ({selectedNumbers:prevState.selectedNumbers.concat(clickNumber)})
+                                                        prevState => ({selectedNumbers:prevState.selectedNumbers.concat(clickedNumber)})
                                                         )
                                         };
 
@@ -97,7 +95,7 @@
         <h3>Play Nine</h3>
         <hr />
         <div className="row">
-        <Stars/>
+        <Stars numberOfStars={this.state.randomNumberOfStars}/>
         <Button/>
         <Answer selectedNumbers={this.state.selectedNumbers}/>
         </div>
