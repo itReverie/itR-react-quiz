@@ -19,13 +19,17 @@
   <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
+
   <script type="text/jsx">
+ //NOTICE: React encourage you to use: map, filter, reduce instead of for loops
+
 
   //Subcomponent of the game: Stars
   const Stars= (props) => {
-    //react encourage you to use: map, filter, reduce instead of for loops
+
     return (
       <div className="col-xs-5">
+      {/*This example of mapping is with one element (i)*/}
       {_.range(props.numberOfStars).map(i => <i key={i} className="fa fa-star"></i>)}
       </div>
     );
@@ -40,10 +44,11 @@
     );
   }
 
-  //Subcomponent of the game : Answer
+  //Subcomponent of the game : Answer, renders the div with the selected number
   const Answer= (props) => {
     return (
       <div className="col-xs-5">
+      {/*This example of mapping is with two elements (number, i) */}
       {props.selectedNumbers.map((number, i)=> <span key={i}>{number}</span>)}
       </div>
     );
@@ -51,6 +56,8 @@
 
   //Subcomponent of the game : Numbers
   const Numbers= (props) => {
+
+    //auxiliary variable to set if the number has been selected or not
     const numberClassName = (number) => {
       if(props.selectedNumbers.indexOf(number) >= 0)
       {
@@ -61,16 +68,23 @@
     return (
       <div className="card text-center">
       <div>
-      {Numbers.list.map((number, i) =>
-        //We cannot to that in the onClick as it needs a function REFERENCE not a function CALL
+
+        {/* This is the syntax to display an element based on an array of numbers */}
+        {Numbers.list.map((number, i) =>
         <span key={i} className={numberClassName(number)} onClick={()=>props.selectNumber(number)}>
         {number}
         </span>)}
+        {/* NOTICE: in the OnClick event we are passing the selected number into the level up. */}
+
         </div>
         </div>
       );
     };
 
+    // We declare the generation of the numbers from 1-9 outside the component
+    //so it does not change everytime we change a subcomponent
+    //NOTICE: How this is declaration is below the component and not above.
+    //Might be that in the life cycle it is generated first and the component migt be used after we call the class component Game.
     Numbers.list = _.range(1,9);
 
     //Component: Game
@@ -82,7 +96,10 @@
         selectedNumbers :[],
         randomNumberOfStars: 1 + Math.floor(Math.random()*9),
       };
-      //(clickNumber) is the argumnent
+
+      // It sems that this is the click dynamic event which:
+      //1. variable depends in a the argument passed (clickNumber)
+      //2. Based on that it sets a satate
       selectNumber = (clickedNumber) => {
 
         //If the state of selected numbers already have the one we clicked, do not send the number again to the subcomponents
