@@ -21,19 +21,17 @@
 
 
   <script type="text/jsx">
- //NOTICE: React encourage you to use: map, filter, reduce instead of for loops
-
+  //NOTICE: React encourage you to use: functional programming (map, filter, reduce) instead of for loops
 
   //Subcomponent of the game: Stars
   const Stars= (props) => {
-
     return (
       <div className="col-xs-5">
-      {/*This example of mapping is with one element (i)*/}
+      {/*_. is used thanks to a library called lodash.Example of mapping with one element (i)*/}
       {_.range(props.numberOfStars).map(i => <i key={i} className="fa fa-star"></i>)}
       </div>
     );
-  }
+  };
 
   //Subcomponent of the game: Button
   const Button= (props) => {
@@ -41,7 +39,7 @@
     switch(props.answerIsCorrect)
     {
       case true:
-      button=<button className="btn btn-success"> <i className="fa fa-check"></i></button>;
+      button=<button className="btn btn-success" onClick={props.acceptAnswer}> <i className="fa fa-check"></i></button>;
       break;
       case false:
       button=<button className="btn btn-danger"> <i className="fa fa-times"></i></button>;
@@ -51,8 +49,13 @@
       break;
     }
     return (
-      <div className="col-xs-2">
-        {button}
+      <div className="col-xs-2 text-center">
+      {button}
+      <br />
+      <br />
+      <button className="btn btn-warning btn-sm" onClick={props.redraw} disabled={props.redraws===0}>
+      <i className="fa fa-refresh">{props.redraws}</i>
+      </button>
       </div>
     );
   }
@@ -72,18 +75,22 @@
 
     //auxiliary variable to set if the number has been selected or not
     const numberClassName = (number) => {
+      if(props.usedNumbers.indexOf(number) >= 0)
+      {
+        return 'used disabled';
+      }
       if(props.selectedNumbers.indexOf(number) >= 0)
       {
         return 'selected';
       }
-    }
+    };
 
     return (
       <div className="card text-center">
       <div>
 
-        {/* This is the syntax to display an element based on an array of numbers */}
-        {Numbers.list.map((number, i) =>
+      {/* This is the syntax to display an element based on an array of numbers */}
+      {Numbers.list.map((number, i) =>
         <span key={i} className={numberClassName(number)} onClick={()=>props.selectNumber(number)}>
         {number}
         </span>)}
@@ -98,18 +105,24 @@
     //so it does not change everytime we change a subcomponent
     //NOTICE: How this is declaration is below the component and not above.
     //Might be that in the life cycle it is generated first and the component migt be used after we call the class component Game.
-    Numbers.list = _.range(1,9);
+    Numbers.list = _.range(1,10);
 
     //Component: Game
     class Game extends React.Component{
 
       // decalring the state variable in the game components
-      // as it will be used in the Anwers and Numbers subcomponents
+      // as it will be used in the Anwers,  Numbers  and other subcomponents
       state= {
         selectedNumbers :[],
         randomNumberOfStars: 1 + Math.floor(Math.random()*9),
+        usedNumbers : [],
         answerIsCorrect: null,
+        redraws:3
       };
+
+      // this.state.xxxx makes use of the variable
+      // this.setState ( assigns values to the state (it could be static or to initialize)
+      // this.setState (prevState => xxxx assigns a new value to the state based on previous states functionality (like recursive)
 
       // It sems that this is the click dynamic event which:
       //1. variable depends in a the argument passed (clickNumber)
@@ -124,72 +137,117 @@
         //otherwise if it is not in the selectedArrays number do send it to as a variable(number) to the subcomponents
         // that will visualizing the number in the Numbers subcomponents
         this.setState (
-          prevState => ({selectedNumbers:prevState.selectedNumbers.concat(clickedNumber)})
+          prevState => ({
+            answerIsCorrect : null,
+            selectedNumbers:prevState.selectedNumbers.concat(clickedNumber)
+          })
         );
       };
 
       unselectNumber = (clickedNumber) => {
         //The declarative way to remove an array in javascript is with filter
         this.setState (
-          prevState => ({selectedNumbers:prevState.selectedNumbers.filter(number => number !== clickedNumber)})
+          prevState => ({
+            answerIsCorrect : null,
+            selectedNumbers:prevState.selectedNumbers.filter(number => number !== clickedNumber)
+          })
+        );
+      };
+      
+      //Function that checks if the selected numbers are the numbers of stars rendered
+      checkAnswer = () =>
+      {
+        this.setState(
+          prevState =>({
+            answerIsCorrect : prevState.randomNumberOfStars === prevState.selectedNumbers.reduce((acc,n) => acc + n, 0)
+          })
         );
       };
 
-
-      checkAnswer = () =>
-      {
-
+      //Function: Valid Answer. Set the state in the conditions to start agin a new selection to carry on with the name
+      acceptAnswer = () => {
         this.setState(
-          prevState =>({ answerIsCorrect : prevState.randomNumberOfStars === prevState.selectedNumbers.reduce((acc,n) => acc + n, 0)
-        }));
-      }
-
-      render(){
-        const {
-          selectedNumbers,
-          randomNumberOfStars,
-          answerIsCorrect}
-          = this.state;
-        return (
-          <div className="container">
-          <h3>Play Nine</h3>
-          <hr />
-          <div className="row">
-          <Stars numberOfStars={randomNumberOfStars}/>
-          <Button selectedNumbers={selectedNumbers}
-                  checkAnswer={this.checkAnswer}
-                  answerIsCorrect={answerIsCorrect}/>
-          <Answer selectedNumbers={selectedNumbers}
-          unselectNumber={this.unselectNumber}/>
-          </div>
-          <br />
-          <Numbers selectedNumbers={selectedNumbers}
-          selectNumber={this.selectNumber}/>
-          </div>
+          prevState =>({
+            usedNumbers: prevState.usedNumbers.concat(prevState.selectedNumbers),
+            selectedNumbers: [],
+            answerIsCorrect: null,
+            randomNumberOfStars: 1 + Math.floor(Math.random()*9)
+          })
         );
-      }
-    }
+      };
+
+      //Function: Refresh. Set the state in the conditions to start agin a new selection to carry on with the name
+      // with the differnece that we do not concat usedNumbers and reduce the counter of redraws
+      redraw= () => {
+        if (this.state.redraws === 0 ) {return 0;}
+        this.setState(
+          prevState => ({
+            selectedNumbers: [],
+            answerIsCorrect: null,
+            randomNumberOfStars: 1 + Math.floor(Math.random()*9),
+            redraws : prevState.redraws-1,
+          }));
+        };
 
 
+        // The important part of the Game where we set the state and its components to render
+        render(){
 
-    class App extends React.Component{
-      render(){
-        return(
-          <div>
-          <Game />
-          </div>
-        );  }
-      }
+          const {
+                  selectedNumbers,
+                  randomNumberOfStars,
+                  usedNumbers,
+                  answerIsCorrect,
+                  redraws
+                }
+                = this.state;
 
-      ReactDOM.render (<App />, container);
+            {/*the state is just keeping the values of the variables, this.xxx are the actions on each component */}
+            return (
+              <div className="container">
+              <h3>Play Nine</h3>
+              <hr />
+              <div className="row">
+              <Stars numberOfStars={randomNumberOfStars}/>
+              <Button selectedNumbers={selectedNumbers}
+              checkAnswer={this.checkAnswer}
+              acceptAnswer={this.acceptAnswer}
+              redraw={this.redraw}
+              redraws={redraws}
+              answerIsCorrect={answerIsCorrect}/>
+              <Answer selectedNumbers={selectedNumbers}
+              unselectNumber={this.unselectNumber}/>
+              </div>
+              <br />
+              <Numbers selectedNumbers={selectedNumbers}
+              selectNumber={this.selectNumber}
+              usedNumbers={usedNumbers}/>
+              </div>
+            );
+          }
+        }
 
-      </script>
-      <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-      <!-- <script src="bootstrap/js/bootstrap.min.js" type="text/javascript"></script> -->
-      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/0.10.0/lodash.min.js"></script>
-      <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
-      <script src="https://npmcdn.com/bootstrap@4.0.0-alpha.5/dist/js/bootstrap.min.js"></script>
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 
-    </body>
-    </html>
+        //Class where we render more classes.
+        //It is usually a good practice to separate at this level in case we need to add libraries and more components.
+        class App extends React.Component{
+          render(){
+            return(
+              <div>
+              <Game />
+              </div>
+            );  }
+          }
+
+
+          ReactDOM.render (<App />, container);
+
+          </script>
+          <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+          <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/0.10.0/lodash.min.js"></script>
+          <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
+          <script src="https://npmcdn.com/bootstrap@4.0.0-alpha.5/dist/js/bootstrap.min.js"></script>
+          <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+
+        </body>
+        </html>
