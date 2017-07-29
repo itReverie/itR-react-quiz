@@ -1,5 +1,5 @@
 
-const possibleCombinationSum = function(arr, n) {
+var possibleCombinationSum = function(arr, n) {
   if (arr.indexOf(n) >= 0) { return true; }
   if (arr[0] > n) { return false; }
   if (arr[arr.length - 1] > n) {
@@ -108,7 +108,7 @@ const Answer= (props) => {
       return (
         <div className="text-center">
         <h2>{props.doneStatus}</h2>
-        <Button className="btn btn-secondary" onClick={props.resetGame}>Play Again</Button>
+        <button className="btn btn-secondary" onClick={props.resetGame}>Play Again</button>
         </div>
       );
     };
@@ -130,7 +130,7 @@ const Answer= (props) => {
         randomNumberOfStars: Game.randomNumber(),
         usedNumbers : [],
         answerIsCorrect: null,
-        redraws:3,
+        redraws:5,
         doneStatus: null,
       });
 
